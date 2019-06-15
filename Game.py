@@ -404,7 +404,7 @@ class Game:
             gridoutput(self.ourhero.ourarmor.datadict())
 
             # user input for what to repair, or all of it, for convenience
-            decision = input('What do you want to repair? [a] for all')
+            decision = input('What do you want to repair? [a] for all\n')
             if decision == '1' or decision == 'a':
                 repaircost = self.ourhero.ourweapon.maxdur - self.ourhero.ourweapon.dur
                 centerprint('Repair Your weapon?')
