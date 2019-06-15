@@ -68,6 +68,7 @@ class Game:
         # width of centered data in screencenter
         self.datawidth = 55
 
+        self.from_camp = False
     # TODO: make self.ourhero.levelup and newhero the same function
     # makes a new hero object for when starting new game.
     def newhero(self):
@@ -143,8 +144,12 @@ class Game:
 
     # where the meat of things happen, this decides what happens when you enter [a]dventure
     def adventure(self):
-        centerprint('[a]dventure or [c]amp')
-        m = input()
+        if self.from_camp != True:
+            centerprint('[a]dventure or [c]amp')
+            m = input()
+        else:
+            m = 'a'
+            self.from_camp = False
         ourrand = random.randint(0, 100)
         if m == 'a' or m == '':
             if ourrand <= 70:
@@ -516,8 +521,8 @@ class Game:
                 gridoutput(self.ourhero.ourarmor.datadict())
                 wait = input()
             elif m == 'a' or m == '':
-                return
-                # adventure()
+                self.from_camp = True
+                self.adventure()
             elif m == 'l':
                 marqueeprint('[LOAD GAME]')
                 self.ourhero = self.loadgame()
@@ -585,7 +590,7 @@ class Game:
             print(str(i) + ' - ' + str(item))
             print(str(datetime.datetime.fromtimestamp(os.path.getmtime('./saves/' + item))))
             print('\n')
-        index = input("Which Character?\nOr [c]ancel")
+        index = input("Which Character?\nOr [c]ancel\n")
         if index == '':
             index = 0
         if index == 'c':
@@ -599,7 +604,7 @@ class Game:
     def savegame(self):
         # pickle hero object to file
         # should prompt to overwrite
-        heroname = input('Name your save file\nOr [c]ancel')
+        heroname = input('Name your save file\nOr [c]ancel\n')
         if heroname == 'c':
             return
         savefolder = "./saves/"
