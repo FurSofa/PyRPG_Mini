@@ -68,6 +68,7 @@ class Game:
         # width of centered data in screencenter
         self.datawidth = 55
 
+        self.from_camp = False
     # TODO: make self.ourhero.levelup and newhero the same function
     # makes a new hero object for when starting new game.
     def newhero(self):
@@ -143,8 +144,12 @@ class Game:
 
     # where the meat of things happen, this decides what happens when you enter [a]dventure
     def adventure(self):
-        centerprint('[a]dventure or [c]amp')
-        m = input()
+        if self.from_camp != True:
+            centerprint('[a]dventure or [c]amp')
+            m = input()
+        else:
+            m = 'a'
+            self.from_camp = False
         ourrand = random.randint(0, 100)
         if m == 'a' or m == '':
             if ourrand <= 70:
@@ -399,7 +404,7 @@ class Game:
             gridoutput(self.ourhero.ourarmor.datadict())
 
             # user input for what to repair, or all of it, for convenience
-            decision = input('What do you want to repair? [a] for all')
+            decision = input('What do you want to repair? [a] for all\n')
             if decision == '1' or decision == 'a':
                 repaircost = self.ourhero.ourweapon.maxdur - self.ourhero.ourweapon.dur
                 centerprint('Repair Your weapon?')
@@ -496,7 +501,7 @@ class Game:
         while camping:
             self.ourhero.hp = self.ourhero.maxhp
             marqueeprint('[CAMP]')
-            centerprint('You rest at camp. Hero HP: ' + str(self.ourhero.hp))
+            centerprint('You rest at the camp. Hero HP: ' + str(self.ourhero.hp))
             centerprint('[a]dventure [i]tem [h]ero')
             centerprint('[p]eddler [b]lacksmith')
             centerprint('[l]oad [s]ave [q]uit')
@@ -516,8 +521,8 @@ class Game:
                 gridoutput(self.ourhero.ourarmor.datadict())
                 wait = input()
             elif m == 'a' or m == '':
-                return
-                # adventure()
+                self.from_camp = True
+                self.adventure()
             elif m == 'l':
                 marqueeprint('[LOAD GAME]')
                 self.ourhero = self.loadgame()
@@ -538,12 +543,12 @@ class Game:
             else:
                 centerprint('You walk back to camp')
 
-    # sell the hero items (will be able to buy soon)
     def peddler(self):
         centerprint('An old Peddler rests at your camp.')
         centerprint('He shows his wares:')
         centerprint('[b]uy, [r]iddle (100g)')
         nextdecision = input()
+        # offer random choice of items at 1.5x value price
         if nextdecision == 'b':
             pass
             item1 = self.ourhero.newitem()
@@ -553,9 +558,8 @@ class Game:
             item5 = self.ourhero.newitem()
             itemarray = [item1, item2, item3, item4, item5]
             for i, item in enumerate(itemarray):
-                print(str(i + 1) + '\t' + item.name + '\t' + str(item.val * 1.5))
-            print('Your selection? (ENTER to go back)')
-            selection = input()
+                print(str(i + 1) + '_'*7 + item.name + '\n\t└ ' + str(round(item.val * 1.5)) + ' Gold')
+            selection = input('\nSelect your item! (ENTER to go back)\n')
             if selection == '1':
                 self.ourhero.buyitem(item1)
             elif selection == '2':
@@ -568,10 +572,8 @@ class Game:
                 self.ourhero.buyitem(item5)
             elif selection == '':
                 centerprint('\"WHYD YOU COME HERE AND NOT BUY ANYTHING?\"')
-                return
             else:
                 centerprint('Get out of here you bum!')
-                # offer random choice of items at 1.5x value price
         if nextdecision == 'r':
             if self.ourhero.canafford(100):
                 self.ourhero.gold -= 100
@@ -585,7 +587,7 @@ class Game:
             print(str(i) + ' - ' + str(item))
             print(str(datetime.datetime.fromtimestamp(os.path.getmtime('./saves/' + item))))
             print('\n')
-        index = input("Which Character?\nOr [c]ancel")
+        index = input("Which Character?\nOr [c]ancel\n")
         if index == '':
             index = 0
         if index == 'c':
@@ -599,7 +601,7 @@ class Game:
     def savegame(self):
         # pickle hero object to file
         # should prompt to overwrite
-        heroname = input('Name your save file\nOr [c]ancel')
+        heroname = input('Name your save file\nOr [c]ancel\n')
         if heroname == 'c':
             return
         savefolder = "./saves/"
