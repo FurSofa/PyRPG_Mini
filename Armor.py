@@ -20,13 +20,13 @@ class Armor:
 
         if chance < 20:
             self.quality = 'Rusty'
-        elif chance >= 21 or chance < 65:
+        elif chance >= 21 and chance < 65:
             self.quality = 'Common'
-        elif chance >= 66 or chance < 86:
+        elif chance >= 66 and chance < 86:
             self.quality = 'Great'
-        elif chance >= 85 or chance < 96:
+        elif chance >= 85 and chance < 96:
             self.quality = 'Magical'
-        elif chance >= 96 or chance < 100:
+        elif chance >= 96 and chance < 100:
             self.quality = 'Legendary'
 
         # Defense Values
